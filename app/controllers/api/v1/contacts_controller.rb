@@ -19,6 +19,7 @@ class Api::V1::ContactsController < Api::V1::BaseController
                         search: 'contacts.read',
                         filter: 'contacts.read',
                         active: 'contacts.read',
+                        priority: 'contacts.read',
                         contactable_inboxes: 'contacts.read',
                         destroy_custom_attributes: 'contacts.update',
                         avatar: 'contacts.update',
@@ -114,6 +115,32 @@ class Api::V1::ContactsController < Api::V1::BaseController
       data: ContactSerializer.serialize_collection(@contacts, include_contact_inboxes: @include_contact_inboxes),
       collection: @contacts,
       message: 'Active contacts retrieved successfully'
+    )
+  end
+
+  # Contacts that need attention, ordered by Contacts::PriorityQuery. `timezone`
+  # (IANA name) decides where "today" ends for the viewer.
+  def priority
+    query = Contacts::PriorityQuery.new(
+      base: listable_contacts,
+      pipelines: policy_scope(Pipeline),
+      time_zone: ActiveSupport::TimeZone[params[:timezone].to_s] || Time.zone
+    )
+    scope = query.relation(search: params[:q])
+    counts = query.counts(scope)
+    @contacts = Contacts::PriorityQuery.order(Contacts::PriorityQuery.filter(scope, params[:group]), params[:sort])
+                                       .preload(avatar_attachment: :blob)
+
+    apply_pagination
+
+    priorities = query.priorities_for(@contacts)
+    paginated_response(
+      data: @contacts.map do |contact|
+        ContactSerializer.serialize(contact, include_labels: false).merge('priority' => priorities[contact.id])
+      end,
+      collection: @contacts,
+      meta: { counts: counts },
+      message: 'Priority contacts retrieved successfully'
     )
   end
 

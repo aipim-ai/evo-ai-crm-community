@@ -37,7 +37,7 @@ class Api::V1::Contacts::NotesController < Api::V1::Contacts::BaseController
 
   def note_json(note)
     note.as_json(
-      only: %i[id content created_at updated_at contact_id user_id],
+      only: %i[id content kind occurred_at created_at updated_at contact_id user_id],
       include: { user: { only: %i[id name email] } }
     )
   end
@@ -47,6 +47,6 @@ class Api::V1::Contacts::NotesController < Api::V1::Contacts::BaseController
   end
 
   def note_params
-    params.require(:note).permit(:content).merge({ contact_id: @contact.id, user_id: Current.user.id })
+    params.require(:note).permit(:content, :kind, :occurred_at).merge({ contact_id: @contact.id, user_id: Current.user.id })
   end
 end
