@@ -122,6 +122,13 @@ on:
       # Nothing else consumes these endpoints, so no other lane catches it.
       - 'app/controllers/api/v1/contacts/notes_controller.rb'
       - 'spec/requests/api/v1/contacts/notes_spec.rb'
+      # Contact history and priority list: typed notes, the contact's tasks across
+      # deals and the urgency ordering. The ordering is one SQL query whose groups
+      # only a request spec with real tasks, deals and conversations exercises.
+      - 'app/models/note.rb'
+      - 'app/controllers/api/v1/contacts/tasks_controller.rb'
+      - 'app/services/contacts/**'
+      - 'spec/requests/api/v1/contacts/history_spec.rb'
       # CRM-187: the settings screen asks this endpoint whether the legacy AI
       # fallback still serves, because the credential list cannot tell "migrated
       # and off" from "not migrated". Hardwiring either half of the guard makes
@@ -384,6 +391,7 @@ jobs:
             spec/serializers/conversation_serializer_spec.rb \
             spec/services/automation_rules/label_token_resolution_spec.rb \
             spec/requests/api/v1/contacts/notes_spec.rb \
+            spec/requests/api/v1/contacts/history_spec.rb \
             spec/requests/api/v1/ai_credentials_migration_state_spec.rb \
             spec/services/ai/migration_state_spec.rb \
             spec/finders/conversation_finder_spec.rb \

@@ -215,6 +215,7 @@ Rails.application.routes.draw do
       resources :contacts, only: [:index, :show, :update, :create, :destroy], controller: 'contacts' do
         collection do
           get :active
+          get :priority
           get :search
           post :filter
           post :import
@@ -233,6 +234,7 @@ Rails.application.routes.draw do
           resources :contact_inboxes, only: [:create]
           resources :labels, only: [:create, :index]
           resources :notes
+          resources :tasks, only: [:index]
         end
       end
 
