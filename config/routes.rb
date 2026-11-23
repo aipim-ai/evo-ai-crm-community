@@ -235,6 +235,7 @@ Rails.application.routes.draw do
           resources :labels, only: [:create, :index]
           resources :notes
           resources :tasks, only: [:index]
+          resources :costs, only: [:index, :create, :update, :destroy]
         end
       end
 

@@ -129,6 +129,10 @@ on:
       - 'app/controllers/api/v1/contacts/tasks_controller.rb'
       - 'app/services/contacts/**'
       - 'spec/requests/api/v1/contacts/history_spec.rb'
+      # Costs sent to a contact (Costs sent tab).
+      - 'app/models/contact_cost.rb'
+      - 'app/controllers/api/v1/contacts/costs_controller.rb'
+      - 'spec/requests/api/v1/contacts/costs_spec.rb'
       # CRM-187: the settings screen asks this endpoint whether the legacy AI
       # fallback still serves, because the credential list cannot tell "migrated
       # and off" from "not migrated". Hardwiring either half of the guard makes
@@ -392,6 +396,7 @@ jobs:
             spec/services/automation_rules/label_token_resolution_spec.rb \
             spec/requests/api/v1/contacts/notes_spec.rb \
             spec/requests/api/v1/contacts/history_spec.rb \
+            spec/requests/api/v1/contacts/costs_spec.rb \
             spec/requests/api/v1/ai_credentials_migration_state_spec.rb \
             spec/services/ai/migration_state_spec.rb \
             spec/finders/conversation_finder_spec.rb \
