@@ -65,6 +65,7 @@ class Contact < ApplicationRecord
   has_many :inboxes, through: :contact_inboxes
   has_many :messages, as: :sender, dependent: :destroy_async
   has_many :notes, dependent: :destroy_async
+  has_many :costs, class_name: 'ContactCost', dependent: :delete_all
   has_many :pipeline_items, dependent: :destroy_async
 
   has_many :contact_companies, dependent: :destroy

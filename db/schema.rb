@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_23_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -375,6 +375,24 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_23_120000) do
     t.index ["company_id", "contact_id"], name: "index_contact_companies_on_company_id_and_contact_id"
     t.index ["contact_id", "company_id"], name: "index_contact_companies_on_contact_id_and_company_id", unique: true
     t.index ["deleted_at"], name: "index_contact_companies_on_deleted_at"
+  end
+
+  create_table "contact_costs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "contact_id", null: false
+    t.uuid "user_id"
+    t.date "sent_on", null: false
+    t.string "product_code", limit: 80, null: false
+    t.string "color", limit: 120
+    t.decimal "package_size", precision: 12, scale: 3, null: false
+    t.string "unit", limit: 8, default: "kg", null: false
+    t.decimal "unit_price", precision: 14, scale: 4, null: false
+    t.string "currency", limit: 3, default: "BRL", null: false
+    t.string "recipient", limit: 120
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id", "sent_on"], name: "index_contact_costs_on_contact_id_and_sent_on"
+    t.index ["user_id"], name: "index_contact_costs_on_user_id"
   end
 
   create_table "contact_inboxes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1390,6 +1408,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_23_120000) do
   add_foreign_key "automation_rule_runs", "automation_rules", on_delete: :cascade
   add_foreign_key "contact_companies", "contacts"
   add_foreign_key "contact_companies", "contacts", column: "company_id"
+  add_foreign_key "contact_costs", "contacts", on_delete: :cascade
   add_foreign_key "crm_forms", "pipeline_stages", column: "default_stage_id"
   add_foreign_key "crm_forms", "pipelines", column: "default_pipeline_id"
   add_foreign_key "data_privacy_consents", "users"
